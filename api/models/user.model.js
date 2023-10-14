@@ -18,6 +18,11 @@ const userSchema = new mongoose.Schema(
             type: String,
             required: true,
         },
+
+        avatar: {
+            type: String,
+            default: 'https://bloganchoi.com/wp-content/uploads/2022/02/avatar-trang-y-nghia.jpeg'
+        },
     },
     {
         timestamps: true,
