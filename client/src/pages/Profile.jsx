@@ -15,13 +15,11 @@ import {
     deleteUserStart,
     deleteUserSuccess,
     deleteUserFailure,
-<<<<<<< HEAD
-=======
     signOutUserStart,
     signOutUserSuccess,
     signOutUserFailure,
->>>>>>> 54845a7 (add sign out functionality)
 } from "../redux/user/userSlice.js";
+import { Link } from "react-router-dom";
 
 export default function Profile() {
     const { currentUser, loading, error } = useSelector((state) => state.user);
@@ -104,11 +102,11 @@ export default function Profile() {
         try {
             dispatch(deleteUserStart());
             const res = await fetch(`/api/user/delete/${currentUser._id}`, {
-                method: 'DELETE',
+                method: "DELETE",
             });
 
             const data = await res.json();
-            if(data.success === false) {
+            if (data.success === false) {
                 dispatch(deleteUserFailure(data.message));
                 return;
             }
@@ -117,25 +115,22 @@ export default function Profile() {
             dispatch(deleteUserFailure(error.message));
         }
     };
-<<<<<<< HEAD
-=======
 
     const handleSignOut = async () => {
         try {
             dispatch(signOutUserStart());
-            const res = await fetch('/api/auth/signout');
+            const res = await fetch("/api/auth/signout");
             const data = await res.json();
-            if(data.message === false) {
-                dispatch(signOutUserFailure(data.message))
+            if (data.message === false) {
+                dispatch(signOutUserFailure(data.message));
                 return;
             }
 
-            dispatch(signOutUserSuccess())
+            dispatch(signOutUserSuccess());
         } catch (error) {
             dispatch(signOutUserFailure(error.message));
         }
-    }
->>>>>>> 54845a7 (add sign out functionality)
+    };
 
     return (
         <div className="p-3 max-w-lg mx-auto">
@@ -202,6 +197,13 @@ export default function Profile() {
                 >
                     {loading ? "Loading..." : "Update"}
                 </button>
+
+                <Link
+                    to="/create-listing"
+                    className=" text-center bg-green-700 rounded-lg uppercase text-white p-3 hover:opacity-95 disabled:opacity-80"
+                >
+                    Create Listing
+                </Link>
             </form>
 
             <div className="flex justify-between mt-5">
@@ -211,7 +213,12 @@ export default function Profile() {
                 >
                     Delete account
                 </span>
-                <span onClick={handleSignOut} className="text-red-700 cursor-pointer">Sign out</span>
+                <span
+                    onClick={handleSignOut}
+                    className="text-red-700 cursor-pointer"
+                >
+                    Sign out
+                </span>
             </div>
 
             <p className="text-red-700 mt-5 text-center">
