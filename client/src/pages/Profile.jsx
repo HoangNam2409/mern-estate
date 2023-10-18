@@ -78,6 +78,9 @@ export default function Profile() {
         e.preventDefault();
         try {
             dispatch(updateUserStart());
+            if(formData.password === '') {
+                delete formData.password
+            }
             const res = await fetch(`/api/user/update/${currentUser._id}`, {
                 method: "POST",
                 headers: {
