@@ -7,6 +7,7 @@ import {
 import { useState } from "react";
 import { app } from "../firebase";
 import { useSelector } from "react-redux";
+import {useNavigate} from 'react-router-dom'
 
 export default function CreateListing() {
     const [files, setFiles] = useState([]);
@@ -31,6 +32,7 @@ export default function CreateListing() {
     const [error, setError] = useState(false);
 
     const { currentUser } = useSelector((state) => state.user);
+    const navigate = useNavigate()
 
     const handleUploadImage = () => {
         setFileUploadLoading(true);
@@ -152,6 +154,7 @@ export default function CreateListing() {
             }
             setLoading(false);
             setError(false);
+            navigate(`/listing/${data._id}`)
         } catch (error) {
             setError(error.message);
             setLoading(false);
