@@ -29,6 +29,8 @@ export default function Profile() {
     const [fileUploadError, setFileUploadError] = useState(false);
     const [formData, setFormData] = useState({});
     const [updateUserSuccessfully, setFileUploadSuccessfully] = useState(false);
+    const [showListingsError, setShowListingsError] = useState(false);
+    const [userListings, setUserListings] = useState([]);
     const dispatch = useDispatch();
 
     // firebase storage
@@ -78,8 +80,8 @@ export default function Profile() {
         e.preventDefault();
         try {
             dispatch(updateUserStart());
-            if(formData.password === '') {
-                delete formData.password
+            if (formData.password === "") {
+                delete formData.password;
             }
             const res = await fetch(`/api/user/update/${currentUser._id}`, {
                 method: "POST",
@@ -132,6 +134,21 @@ export default function Profile() {
             dispatch(signOutUserSuccess());
         } catch (error) {
             dispatch(signOutUserFailure(error.message));
+        }
+    };
+
+    const handleShowListings = async () => {
+        try {
+            const res = await fetch(`/api/user/listings/${currentUser._id}`);
+            const data = await res.json();
+            if (data.success === false) {
+                showListingsError(true);
+                return;
+            }
+            setUserListings(data);
+            setShowListingsError(false);
+        } catch (error) {
+            setShowListingsError(true);
         }
     };
 
@@ -227,9 +244,61 @@ export default function Profile() {
             <p className="text-red-700 mt-5 text-center">
                 {error ? error : ""}
             </p>
+
             <p className="text-green-700 mt-5 text-center">
                 {updateUserSuccessfully ? "User is updated successfully!" : ""}
             </p>
+
+            <button
+                type="button"
+                onClick={handleShowListings}
+                className="text-green-700 w-full"
+            >
+                Show Listings
+            </button>
+            <p className="text-red-700 mt-5 text-center">
+                {showListingsError ? "Error showing listings" : ""}
+            </p>
+
+            {userListings && userListings.length > 0 && (
+                <div className="flex flex-col gap-4">
+                    <h1 className="text-center mt-7 text-2xl font-semibold text-slate-700">
+                        Your Listings
+                    </h1>
+                    {userListings.map((userListing) => {
+                        return (
+                            <div
+                                key={userListing._id}
+                                className="border rounded-lg p-3 flex justify-between items-center gap-4"
+                            >
+                                <Link to={`/listings/${currentUser._id}`}>
+                                    <img
+                                        className="h-16 w-16 object-contain rounded-lg"
+                                        src={userListing.imageUrls[0]}
+                                        alt="Image listing"
+                                    />
+                                </Link>
+
+                                <Link
+                                    className="text-slate-700 font-semibold flex-1 hover:underline truncate"
+                                    to={`/listings/${currentUser._id}`}
+                                >
+                                    <p>{userListing.name}</p>
+                                </Link>
+
+                                <div className="flex flex-col items-center">
+                                    <button className="text-red-700">
+                                        Delete
+                                    </button>
+                                    <button className="text-green-700">
+                                        Edit
+                                    </button>
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
+            )}
         </div>
     );
 }
