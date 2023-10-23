@@ -43,6 +43,10 @@ export default function Profile() {
         if (file) {
             handleFileUpload(file);
         }
+
+        return () => {
+            
+        }
     }, [file]);
 
     const handleFileUpload = (file) => {
@@ -313,9 +317,11 @@ export default function Profile() {
                                     >
                                         Delete
                                     </button>
-                                    <button className="text-green-700">
-                                        Edit
-                                    </button>
+                                    <Link to={`/update-listing/${userListing._id}`}>
+                                        <button className="text-green-700">
+                                            Edit
+                                        </button>
+                                    </Link>
                                 </div>
                             </div>
                         );
