@@ -3,8 +3,17 @@ import { useParams } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import SwiperCore from "swiper";
 import { Navigation } from "swiper/modules";
-import { FaBath, FaBed, FaChair, FaMapMarkerAlt, FaParking, FaShare } from "react-icons/fa";
+import {
+    FaBath,
+    FaBed,
+    FaChair,
+    FaMapMarkerAlt,
+    FaParking,
+    FaShare,
+} from "react-icons/fa";
 import "swiper/css/bundle";
+import { useSelector } from "react-redux";
+import Contact from "../components/Contact";
 
 export default function Listing() {
     SwiperCore.use([Navigation]);
@@ -12,7 +21,9 @@ export default function Listing() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
     const [copied, setCopied] = useState(false);
+    const [contact, setContact] = useState(false);
     const params = useParams();
+    const { currentUser } = useSelector((state) => state.user);
 
     useEffect(() => {
         const fetchListing = async () => {
@@ -111,28 +122,47 @@ export default function Listing() {
                         </div>
 
                         <p className="text-slate-700">
-                            <span className="font-semibold text-black">Description - </span>
+                            <span className="font-semibold text-black">
+                                Description -{" "}
+                            </span>
                             {listing.description}
                         </p>
 
                         <ul className="flex gap-4 text-green-900 font-semibold text-sm sm:gap-6 items-center flex-wrap">
                             <li className="flex gap-1 items-center whitespace-nowrap">
-                                <FaBed className="text-lg"/>
-                                {listing.bedrooms > 1 ? `${listing.bedrooms} Beds` : `${listing.bedrooms} Bed`}
+                                <FaBed className="text-lg" />
+                                {listing.bedrooms > 1
+                                    ? `${listing.bedrooms} Beds`
+                                    : `${listing.bedrooms} Bed`}
                             </li>
                             <li className="flex gap-1 items-center whitespace-nowrap">
-                                <FaBath  className="text-lg"/>
-                                {listing.bathrooms > 1 ? `${listing.bathrooms} Baths` : `${listing.bathrooms} Bath`}
+                                <FaBath className="text-lg" />
+                                {listing.bathrooms > 1
+                                    ? `${listing.bathrooms} Baths`
+                                    : `${listing.bathrooms} Bath`}
                             </li>
                             <li className="flex gap-1 items-center whitespace-nowrap">
-                                <FaParking  className="text-lg"/>
-                                {listing.parking ? 'Parking spot' : 'No parking'}
+                                <FaParking className="text-lg" />
+                                {listing.parking
+                                    ? "Parking spot"
+                                    : "No parking"}
                             </li>
                             <li className="flex gap-1 items-center whitespace-nowrap">
-                                <FaChair  className="text-lg"/>
-                                {listing.furnished ? 'Furnished' : 'Unfurnished'}
+                                <FaChair className="text-lg" />
+                                {listing.furnished
+                                    ? "Furnished"
+                                    : "Unfurnished"}
                             </li>
                         </ul>
+
+                        {/* Contact Landlord */}
+                        {currentUser && listing.userRef !== currentUser._id && !contact && (
+                            <button onClick={() => setContact(true)} className="border bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95">
+                                Contact landlord
+                            </button>
+                        )}
+
+                        {contact && <Contact listing={listing}/>}
                     </div>
                 </div>
             )}
