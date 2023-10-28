@@ -108,7 +108,6 @@ export const getListings = async (req, res, next) => {
             .skip(startIndex)
             .limit(limit)
 
-            console.log(offer)
         return res.status(200).json(listings);
     } catch (error) {
         next(error);
